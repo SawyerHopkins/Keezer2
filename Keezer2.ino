@@ -3,14 +3,18 @@
 #include <Wire.h> 
 #include <LiquidCrystal_I2C.h>
 
-LiquidCrystal_I2C lcd(0x27,20,4);
-
 // Create variables
-int targetTemp;
-int sampleIndex;
-float averageTemp;
-int serialActive = false;
+int targetTemp = 65;
+int sampleIndex = 0;
+float averageTemp = 0;
 OneWire sensorController(TEMPERATURE_PIN);
+
+// Create debug variables
+int serialActive = false;
+
+// Create LCD variables
+int previousScreen = 0;
+LiquidCrystal_I2C lcd(0x27,20,4);
 
 void createSerialConnection() {
   if (DEBUG) {

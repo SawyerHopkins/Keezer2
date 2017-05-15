@@ -5,6 +5,7 @@
 
 // Define analog pins
 #define POT_PIN 0
+#define SCREEN_PIN 1
 
 // Define resistors
 #define R_THERM 4700
@@ -33,3 +34,8 @@
 // Define debugging
 #define DEBUG true
 
+// Define analog
+#define MAX_ANALOG 1023
+
+// Define screens
+#define MAX_SCREENS 2

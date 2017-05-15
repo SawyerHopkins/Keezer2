@@ -10,4 +10,8 @@ float manageRelay(float dF) {
   } else if (dF < (targetTemp + HYS)) {
     digitalWrite(RELAY_PIN, LOW);
   }
+  
+  // Use the onboard LED to determine relay status
+  int relayStatus = digitalRead(RELAY_PIN);
+  digitalWrite(LED_PIN, relayStatus);
 }
