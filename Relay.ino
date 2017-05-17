@@ -1,14 +1,19 @@
-float manageRelay(float dF) {
-  if (dF > (targetTemp + HYS)) {
+float manageRelay() {
+  if (currentTemperature > (targetTemperature + HYS)) {
     // If we are above boiling or below freezing we have a problem.
-    if (dF < ERROR_HIGH_TEMP && dF > ERROR_LOW_TEMP) {
+    if (currentTemperature < ERROR_HIGH_TEMP) {
       digitalWrite(RELAY_PIN, HIGH);
     } else {
       Serial.print("Possible probe error. Defaulting of off state.");
       digitalWrite(RELAY_PIN, LOW);
     }
-  } else if (dF < (targetTemp - HYS)) {
-    digitalWrite(RELAY_PIN, LOW);
+  } else if (currentTemperature < (targetTemperature - HYS)) {
+    if (currentTemperature > ERROR_LOW_TEMP) {
+      digitalWrite(RELAY_PIN, LOW);
+    } else {
+      Serial.print("Possible probe error. Defaulting of off state.");
+      digitalWrite(RELAY_PIN, LOW);
+    }
   }
   
   // Use the onboard LED to determine relay status

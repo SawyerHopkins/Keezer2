@@ -1,45 +1,45 @@
 void initTemperature() {
-  oldTemp = 65;
-  targetTemp = 65;
+  targetTemperature = 65;
+  currentTemperature = 65;
   initSampling();
 }
 
 void initSampling() {
-  sampleIndex = 0;
-  averageTemp = targetTemp;
+  pollingIndex = 0;
+  temperaturePollingCache = targetTemperature;
 }
 
-void runTemperature(boolean &hasData, float &temperature) {
+void pollTemperature(boolean &hasData, float &temperature) {
   
   // Read the temperature data
-  averageTemp += readTemperaturePin();
+  temperaturePollingCache += readTemperaturePin();
   
   // If we have enough samples
   // reset sampling data
   // and manage the relay
-  if (sampleIndex >= SAMPLE_COUNT) {
+  if (pollingIndex >= SAMPLE_COUNT) {
     float dF = convertAndAverageData();
     initSampling();
     hasData = true;
     temperature = dF;
   } else {
-    sampleIndex++;
+    pollingIndex++;
     hasData = false;
     temperature = 0;
   }
 }
 
-void recordRecords(float temperature) {
-  if (temperature > allTimeHigh) {
-    allTimeHigh = temperature;
+void recordRecords() {
+  if (currentTemperature > allTimeHigh) {
+    allTimeHigh = currentTemperature;
   }
-  if (temperature < allTimeLow) {
-    allTimeLow = temperature;
+  if (currentTemperature < allTimeLow) {
+    allTimeLow = currentTemperature;
   }
 }
 
 float convertAndAverageData() {
-  float sampledAverage = averageTemp / (float) sampleIndex;
+  float sampledAverage = temperaturePollingCache / (float) pollingIndex;
   sampledAverage *= 9;
   sampledAverage /= 5;
   sampledAverage += 32;

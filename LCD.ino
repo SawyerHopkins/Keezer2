@@ -1,15 +1,16 @@
-void updateDisplay(float temperature) {
+void updateDisplay() {
   // Use a pot to scan screens like a radio
-  short currentScreen = (analogRead(SCREEN_PIN) * MAX_SCREENS) / (MAX_ANALOG + 1);
+  short newScreen = (analogRead(SCREEN_PIN) * MAX_SCREENS) / (MAX_ANALOG + 1);
   
   // When we change screen do a full clear
-  if (currentScreen != previousScreen) {
+  if (currentScreen != newScreen) {
     lcd.clear();
   }
   
-  switch (currentScreen) {
+  // Update the current screen
+  switch (newScreen) {
     case 0:
-      temperatureScreen(temperature);
+      temperatureScreen();
       break;
     case 1:
       runtimeScreen();
@@ -19,19 +20,18 @@ void updateDisplay(float temperature) {
       break;
   }
   
-  
-  previousScreen = currentScreen;
+  currentScreen = newScreen;
 }
 
-void temperatureScreen(float temperature) {
+void temperatureScreen() {
   lcd.setCursor(0, 0);
   lcd.print("Current Temperature");
   lcd.setCursor(0, 1);
-  lcd.print(temperature);
+  lcd.print(currentTemperature);
   lcd.setCursor(0, 2);
   lcd.print("Target Temperature");
   lcd.setCursor(0, 3);
-  lcd.print(targetTemp);
+  lcd.print(targetTemperature);
 }
 
 void runtimeScreen() {

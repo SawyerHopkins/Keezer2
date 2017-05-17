@@ -1,29 +1,25 @@
 #include "Defs.h"
-#include <OneWire.h>
 #include <Wire.h> 
+#include <OneWire.h>
 #include <LiquidCrystal_I2C.h>
 
 // Create variables
-float oldTemp = 0;
-int targetTemp = 65;
-int sampleIndex = 0;
-float averageTemp = 0;
-float allTimeHigh = ERROR_LOW_TEMP;
-float allTimeLow = ERROR_HIGH_TEMP;
+short pollingIndex = 0;
+float targetTemperature = 65;
+float currentTemperature = 0;
+float temperaturePollingCache = 0;
 OneWire sensorController(TEMPERATURE_PIN);
 
-// Create debug variables
-int serialActive = false;
+// Create records variables
+float allTimeHigh = ERROR_LOW_TEMP;
+float allTimeLow = ERROR_HIGH_TEMP;
 
 // Create LCD variables
-int previousScreen = 0;
+short currentScreen = 0;
 LiquidCrystal_I2C lcd(0x27,20,4);
 
 void createSerialConnection() {
-  if (DEBUG) {
-    serialActive = true;
-    Serial.begin(9600);
-  }
+  Serial.begin(9600);
 }
 
 void createPinConnections() {
@@ -40,47 +36,55 @@ void setup() {
 }
 
 void loop() {
-  float temperature = 0;
+  preUpdate();
+  update();
+  postUpdate();
+  delay(10);
+}
+
+void preUpdate() {
+  float newTemperature = 0;
   boolean hasTemperatureData = false;
   
   // Get the current status of the temperature poller
-  runTemperature(hasTemperatureData, temperature);
+  pollTemperature(hasTemperatureData, newTemperature);
   
-  // If we have temperature data, run the relay manager
+  // If we have new temperature data, set it.
   if (hasTemperatureData) {
-    Serial.print("Current Temp: ");
-    Serial.println(temperature);
-    Serial.print("Target Temp: ");
-    Serial.println(targetTemp);
-    manageRelay(temperature);
-    // Records temperature records
-    recordRecords(temperature);
-    // Record the current average temperature for future loops
-    oldTemp = temperature;
+    currentTemperature = newTemperature; 
   }
+}
+
+void update() {
+  // Manage the relay state
+  manageRelay();
+  
+  // Records temperature records
+  recordRecords();
   
   // Update the target temperature from the pot
   readFromPot();
   
   // Write to the LCD display
-  updateDisplay(oldTemp);
-  
-  // Write to debug terminal
-  // writeLog(oldTemp);
-  
-  delay(10);
+  updateDisplay();
 }
 
-void writeLog(float temperature) {
-  if (serialActive) {
+void postUpdate() {
+  // Write to debug terminal
+  writeLog();
+}
+
+
+void writeLog() {
+  if (DEBUG) {
     Serial.print("Average Temperature: ");
-    Serial.println(temperature);
+    Serial.println(currentTemperature);
     Serial.print("Relay status: ");
     Serial.println(digitalRead(RELAY_PIN));
     Serial.print("Pot value: ");
-    Serial.println(analogRead(POT_PIN));
+    Serial.println(analogRead(TARGET_PIN));
     Serial.print("Target value: ");
-    Serial.println(targetTemp);
+    Serial.println(targetTemperature);
   }
 }
 

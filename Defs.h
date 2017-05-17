@@ -4,7 +4,7 @@
 #define LED_PIN 13
 
 // Define analog pins
-#define POT_PIN 0
+#define TARGET_PIN 0
 #define SCREEN_PIN 1
 
 // Define resistors
@@ -24,15 +24,15 @@
 #define SAMPLE_COUNT 100
 
 // Define pot values
-#define MAX_TEMPERATURE 70
-#define MIN_TEMPERATURE 40
+#define MAX_TEMPERATURE (float) 70.0
+#define MIN_TEMPERATURE (float) 40.0
 
 // Define error values
 #define ERROR_HIGH_TEMP 212
 #define ERROR_LOW_TEMP 32
 
 // Define debugging
-#define DEBUG true
+#define DEBUG false
 
 // Define analog
 #define MAX_ANALOG 1023
