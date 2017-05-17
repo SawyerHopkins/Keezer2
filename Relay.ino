@@ -7,7 +7,7 @@ float manageRelay(float dF) {
       Serial.print("Possible probe error. Defaulting of off state.");
       digitalWrite(RELAY_PIN, LOW);
     }
-  } else if (dF < (targetTemp + HYS)) {
+  } else if (dF < (targetTemp - HYS)) {
     digitalWrite(RELAY_PIN, LOW);
   }
   

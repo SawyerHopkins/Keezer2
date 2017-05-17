@@ -4,9 +4,12 @@
 #include <LiquidCrystal_I2C.h>
 
 // Create variables
+float oldTemp = 0;
 int targetTemp = 65;
 int sampleIndex = 0;
 float averageTemp = 0;
+float allTimeHigh = ERROR_LOW_TEMP;
+float allTimeLow = ERROR_HIGH_TEMP;
 OneWire sensorController(TEMPERATURE_PIN);
 
 // Create debug variables
@@ -41,21 +44,29 @@ void loop() {
   boolean hasTemperatureData = false;
   
   // Get the current status of the temperature poller
-  //runTemperature(hasTemperatureData, temperature);
+  runTemperature(hasTemperatureData, temperature);
   
   // If we have temperature data, run the relay manager
   if (hasTemperatureData) {
+    Serial.print("Current Temp: ");
+    Serial.println(temperature);
+    Serial.print("Target Temp: ");
+    Serial.println(targetTemp);
     manageRelay(temperature);
+    // Records temperature records
+    recordRecords(temperature);
+    // Record the current average temperature for future loops
+    oldTemp = temperature;
   }
   
   // Update the target temperature from the pot
   readFromPot();
   
   // Write to the LCD display
-  updateDisplay(temperature);
+  updateDisplay(oldTemp);
   
   // Write to debug terminal
-  writeLog(temperature);
+  // writeLog(oldTemp);
   
   delay(10);
 }

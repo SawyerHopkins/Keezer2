@@ -38,4 +38,4 @@
 #define MAX_ANALOG 1023
 
 // Define screens
-#define MAX_SCREENS 2
+#define MAX_SCREENS 3

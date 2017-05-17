@@ -1,4 +1,5 @@
 void initTemperature() {
+  oldTemp = 65;
   targetTemp = 65;
   initSampling();
 }
@@ -25,6 +26,15 @@ void runTemperature(boolean &hasData, float &temperature) {
     sampleIndex++;
     hasData = false;
     temperature = 0;
+  }
+}
+
+void recordRecords(float temperature) {
+  if (temperature > allTimeHigh) {
+    allTimeHigh = temperature;
+  }
+  if (temperature < allTimeLow) {
+    allTimeLow = temperature;
   }
 }
 

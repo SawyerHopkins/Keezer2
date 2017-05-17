@@ -14,6 +14,9 @@ void updateDisplay(float temperature) {
     case 1:
       runtimeScreen();
       break;
+    case 2:
+      recordsScreen();
+      break;
   }
   
   
@@ -38,9 +41,9 @@ void runtimeScreen() {
   unsigned short hours = (now / 3600) % 24;
   unsigned short days = now / 86400;
   
-  lcd.setCursor(0, 2);
+  lcd.setCursor(0, 0);
   lcd.print("Current Runtime");
-  lcd.setCursor(0, 3);
+  lcd.setCursor(0, 1);
   lcd.print(makeRuntimeString(days));
   lcd.print(":");
   lcd.print(makeRuntimeString(hours));
@@ -48,6 +51,24 @@ void runtimeScreen() {
   lcd.print(makeRuntimeString(minutes));
   lcd.print(":");
   lcd.print(makeRuntimeString(seconds));
+  lcd.setCursor(0, 2);
+  lcd.print("Relay state: ");
+  if (digitalRead(RELAY_PIN)) {
+    lcd.print("on ");
+  } else {
+    lcd.print("off");
+  }
+}
+
+void recordsScreen() {
+  lcd.setCursor(0, 0);
+  lcd.print("Temperature Records");
+  lcd.setCursor(0, 1);
+  lcd.print("High: ");
+  lcd.print(allTimeHigh);
+  lcd.setCursor(0, 2);
+  lcd.print("Low: ");
+  lcd.print(allTimeLow);
 }
 
 String makeRuntimeString(unsigned short value) {
